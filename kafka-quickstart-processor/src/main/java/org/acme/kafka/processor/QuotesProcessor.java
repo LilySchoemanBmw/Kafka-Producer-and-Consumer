@@ -10,6 +10,7 @@ import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
 import io.smallrye.reactive.messaging.annotations.Blocking;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -23,7 +24,11 @@ import org.eclipse.microprofile.reactive.messaging.Outgoing;
 @ApplicationScoped
 public class QuotesProcessor {
 
+
+    private Logger processorLog = Logger.getLogger(QuotesProcessor.class.getName());
     private Random random = new Random();
+
+    private Quote newQuote = new Quote();
 
     @Incoming("requests") // Indicates that the method consumes the items from the requests channel.
     @Outgoing("quotes") // Indicates that the objects returned by the method are sent to the quotes channel.
@@ -34,6 +39,8 @@ public class QuotesProcessor {
         //System.out.println("in quote processor");
 
         Thread.sleep(200);
-        return new Quote(quoteRequest, random.nextInt(100));
+       newQuote = new Quote(quoteRequest, random.nextInt(100));
+        processorLog.info("This is the final quote "+ newQuote);
+       return newQuote;
     }
 }
