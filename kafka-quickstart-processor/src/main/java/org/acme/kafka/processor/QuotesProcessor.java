@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.ws.rs.Path;
 
 import org.acme.kafka.model.Quote;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -22,12 +23,14 @@ import org.eclipse.microprofile.reactive.messaging.Outgoing;
  * The result is pushed to the "quotes" Kafka topic.
  */
 @ApplicationScoped
+
+@Path("/")
 public class QuotesProcessor {
 
 
     private Logger processorLog = Logger.getLogger(QuotesProcessor.class.getName());
     private Random random = new Random();
-
+    private int counter = 1;
     private Quote newQuote = new Quote();
 
     @Incoming("requests") // Indicates that the method consumes the items from the requests channel.
@@ -40,7 +43,7 @@ public class QuotesProcessor {
 
         Thread.sleep(200);
        newQuote = new Quote(quoteRequest, random.nextInt(100));
-        processorLog.info("This is the final quote "+ newQuote);
+        processorLog.info("This is the final quote "+ newQuote + "Quote Number:"+counter++);
        return newQuote;
     }
 }
